@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 package io.izzel.arclight.common.paper;
 
+import org.bukkit.plugin.InvalidPluginException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -12,6 +13,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PaperPluginJarsTest {
 
@@ -28,6 +30,19 @@ class PaperPluginJarsTest {
     void paperPluginYmlAloneIsUnsupported() throws Exception {
         assertEquals(PaperPluginJars.UNSUPPORTED, PaperPluginJars.classify(jar("paper.jar", Map.of(
             "paper-plugin.yml", "name: Sample\n"))));
+    }
+
+    @Test
+    void paperPluginYmlAloneIsRefused() throws Exception {
+        Path paperOnly = jar("paper.jar", Map.of("paper-plugin.yml", "name: Sample\n"));
+        InvalidPluginException refused = assertThrows(InvalidPluginException.class,
+            () -> PaperPluginJars.refusePaperOnly(paperOnly));
+        assertEquals(PaperPluginJars.UNSUPPORTED, refused.getMessage());
+    }
+
+    @Test
+    void pluginYmlIsNotRefusedAtThisEntry() throws Exception {
+        PaperPluginJars.refusePaperOnly(jar("bukkit.jar", Map.of("plugin.yml", "name: Sample\n")));
     }
 
     @Test
