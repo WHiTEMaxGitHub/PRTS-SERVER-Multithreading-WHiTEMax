@@ -9,7 +9,9 @@ import org.bukkit.Chunk;
 
 import java.util.concurrent.CompletableFuture;
 
-// Joins a chunk the server already has. The load flag stays false so this path does not start generation.
+/**
+ * Turns a chunk future into a Bukkit chunk. The two-argument lookup starts generation.
+ */
 public final class PaperChunkLoads {
 
     public static final boolean START_GENERATION = false;
@@ -21,11 +23,7 @@ public final class PaperChunkLoads {
         return generate ? true : START_GENERATION;
     }
 
-    public static CompletableFuture<Chunk> withoutGenerating(Chunk alreadyLoaded,
-                                                             CompletableFuture<ChunkResult<ChunkAccess>> existing) {
-        if (alreadyLoaded != null) {
-            return CompletableFuture.completedFuture(alreadyLoaded);
-        }
+    public static CompletableFuture<Chunk> bukkitChunk(CompletableFuture<ChunkResult<ChunkAccess>> existing) {
         if (existing == null) {
             return CompletableFuture.completedFuture(null);
         }
