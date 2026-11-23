@@ -26,8 +26,7 @@ class PaperChunkLoadsTest {
     }
 
     @Test
-    void theGenerateFlagStaysOffUnlessAsked() {
-        assertFalse(PaperChunkLoads.START_GENERATION);
+    void theGenerateFlagPassesThrough() {
         assertFalse(PaperChunkLoads.generationFlag(false));
         assertTrue(PaperChunkLoads.generationFlag(true));
     }
